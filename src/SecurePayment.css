@@ -1,0 +1,32 @@
+.payment-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.payment-form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.error-box {
+    color: #dc2626;
+    background-color: #fee2e2;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Button inherits from App.css */
