@@ -110,3 +110,12 @@ body {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
 }
+
+/* === Error Box === */
+.error-box {
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}

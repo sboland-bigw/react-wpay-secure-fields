@@ -8,14 +8,16 @@ import {
     useSecureFields
 } from '@gr4vy/secure-fields-react';
 import './SecurePayment.css';
+import { authorisePayment } from './api';
 
 type PaymentFormProps = {
     onStart: () => void;
     loading: boolean;
     error: string | null;
+    success: boolean;
 };
 
-const PaymentForm = ({ onStart, loading, error }: PaymentFormProps) => {
+const PaymentForm = ({ onStart, loading, error, success }: PaymentFormProps) => {
     const { secureFields } = useSecureFields();
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -23,6 +25,15 @@ const PaymentForm = ({ onStart, loading, error }: PaymentFormProps) => {
         onStart();
         secureFields.submit();
     };
+
+    if (success) {
+        return (
+            <div className="success-box">
+                <h2>✓ Payment Successful</h2>
+                <p>Your payment has been authorised successfully.</p>
+            </div>
+        );
+    }
 
     return (
         <form className="payment-form" onSubmit={handleSubmit}>
@@ -57,15 +68,34 @@ interface SecurePaymentProps {
 const SecurePayment = ({ checkoutSessionId } : SecurePaymentProps) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
     const onStart = () => {
         setLoading(true);
         setError(null);
     };
 
-    const handleCardVaultSuccess = () => {
-        setLoading(false);
-        console.log('Card tokenized successfully');
+    const handleCardVaultSuccess = async () => {
+        console.log('Card tokenized successfully, authorising payment...');
+        
+        try {
+            // Step 2: Authorise the payment with the sessionId
+            const response = await authorisePayment({
+                sessionId: checkoutSessionId,
+            });
+
+            if (response.success) {
+                setSuccess(true);
+                setLoading(false);
+                console.log('Payment authorised successfully:', response);
+            } else {
+                throw new Error(response.message || 'Payment authorisation failed');
+            }
+        } catch (err) {
+            setLoading(false);
+            setError(err instanceof Error ? err.message : 'Failed to authorise payment');
+            console.error('Authorisation failure:', err);
+        }
     };
 
     const handleCardVaultFailure = (err: unknown) => {
@@ -85,7 +115,7 @@ const SecurePayment = ({ checkoutSessionId } : SecurePaymentProps) => {
             onCardVaultFailure={handleCardVaultFailure}
         >
             <div className="payment-card">
-                <PaymentForm onStart={onStart} loading={loading} error={error} />
+                <PaymentForm onStart={onStart} loading={loading} error={error} success={success} />
             </div>
         </SecureFields>
     );

@@ -29,4 +29,22 @@
     margin-bottom: 1rem;
 }
 
+.success-box {
+    color: #059669;
+    background-color: #d1fae5;
+    border-radius: 6px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.success-box h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.success-box p {
+    margin-bottom: 0;
+}
+
 /* Button inherits from App.css */
