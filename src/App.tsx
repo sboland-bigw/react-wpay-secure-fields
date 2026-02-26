@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SecurePayment from './SecurePayment';
 import { createCheckoutSession } from './api';
@@ -8,7 +8,7 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const initSession = async () => {
+    const initSession = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
@@ -20,11 +20,11 @@ const App: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         initSession();
-    }, []);
+    }, [initSession]);
 
     const handleReset = () => {
         setCheckoutSessionId(null);

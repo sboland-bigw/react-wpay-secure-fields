@@ -19,6 +19,22 @@ export interface AuthorisationResponse {
 }
 
 /**
+ * Helper function to handle API errors with detailed messages
+ */
+const handleApiError = async (response: Response, operation: string): Promise<never> => {
+    let errorMessage = `${operation} (${response.status})`;
+    try {
+        const errorData = await response.json();
+        if (errorData.message) {
+            errorMessage += `: ${errorData.message}`;
+        }
+    } catch {
+        errorMessage += `: ${response.statusText}`;
+    }
+    throw new Error(errorMessage);
+};
+
+/**
  * Step 1: Create a checkout session
  * POST /checkout-sessions
  */
@@ -32,16 +48,7 @@ export const createCheckoutSession = async (): Promise<CheckoutSession> => {
     });
 
     if (!response.ok) {
-        let errorMessage = `Failed to create checkout session (${response.status})`;
-        try {
-            const errorData = await response.json();
-            if (errorData.message) {
-                errorMessage += `: ${errorData.message}`;
-            }
-        } catch {
-            errorMessage += `: ${response.statusText}`;
-        }
-        throw new Error(errorMessage);
+        await handleApiError(response, 'Failed to create checkout session');
     }
 
     return response.json();
@@ -63,16 +70,7 @@ export const authorisePayment = async (
     });
 
     if (!response.ok) {
-        let errorMessage = `Failed to authorise payment (${response.status})`;
-        try {
-            const errorData = await response.json();
-            if (errorData.message) {
-                errorMessage += `: ${errorData.message}`;
-            }
-        } catch {
-            errorMessage += `: ${response.statusText}`;
-        }
-        throw new Error(errorMessage);
+        await handleApiError(response, 'Failed to authorise payment');
     }
 
     return response.json();
