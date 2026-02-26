@@ -85,8 +85,8 @@ const SecurePayment = ({ checkoutSessionId } : SecurePaymentProps) => {
             });
 
             if (response.success) {
-                setSuccess(true);
                 setLoading(false);
+                setSuccess(true);
                 console.log('Payment authorised successfully:', response);
             } else {
                 throw new Error(response.message || 'Payment authorisation failed');

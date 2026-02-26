@@ -32,7 +32,16 @@ export const createCheckoutSession = async (): Promise<CheckoutSession> => {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to create checkout session: ${response.statusText}`);
+        let errorMessage = `Failed to create checkout session (${response.status})`;
+        try {
+            const errorData = await response.json();
+            if (errorData.message) {
+                errorMessage += `: ${errorData.message}`;
+            }
+        } catch {
+            errorMessage += `: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -54,7 +63,16 @@ export const authorisePayment = async (
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to authorise payment: ${response.statusText}`);
+        let errorMessage = `Failed to authorise payment (${response.status})`;
+        try {
+            const errorData = await response.json();
+            if (errorData.message) {
+                errorMessage += `: ${errorData.message}`;
+            }
+        } catch {
+            errorMessage += `: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();

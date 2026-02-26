@@ -8,39 +8,27 @@ const App: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const initSession = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
-                const session = await createCheckoutSession();
-                setCheckoutSessionId(session.sessionId);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to create checkout session');
-                console.error('Error creating checkout session:', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const initSession = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const session = await createCheckoutSession();
+            setCheckoutSessionId(session.sessionId);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to create checkout session');
+            console.error('Error creating checkout session:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         initSession();
     }, []);
 
     const handleReset = () => {
         setCheckoutSessionId(null);
-        setIsLoading(true);
-        setError(null);
-        
-        // Create a new session
-        createCheckoutSession()
-            .then(session => {
-                setCheckoutSessionId(session.sessionId);
-                setIsLoading(false);
-            })
-            .catch(err => {
-                setError(err instanceof Error ? err.message : 'Failed to create checkout session');
-                setIsLoading(false);
-            });
+        initSession();
     };
 
     return (
